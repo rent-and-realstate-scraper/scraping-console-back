@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"scraping-console-back/models"
 	u "scraping-console-back/utils"
@@ -15,7 +16,7 @@ var CreateAccount = func(w http.ResponseWriter, r *http.Request) {
 		u.Respond(w, u.Message(false, "Invalid request"))
 		return
 	}
-
+	fmt.Println(*account)
 	resp := account.Create() //Create account
 	u.Respond(w, resp)
 }

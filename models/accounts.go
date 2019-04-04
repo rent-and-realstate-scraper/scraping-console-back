@@ -3,11 +3,11 @@ package models
 import (
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
-	u "go-mux-jwt-template/utils"
-	"strings"
 	"github.com/jinzhu/gorm"
-	"os"
 	"golang.org/x/crypto/bcrypt"
+	"os"
+	u "scraping-console-back/utils"
+	"strings"
 )
 
 /*
