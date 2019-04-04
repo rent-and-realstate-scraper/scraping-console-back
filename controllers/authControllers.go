@@ -1,17 +1,15 @@
 package controllers
 
 import (
-	"fmt"
-	"net/http"
-	u "go-mux-jwt-template/utils"
-	"go-mux-jwt-template/models"
 	"encoding/json"
+	"net/http"
+	"scraping-console-back/models"
+	u "scraping-console-back/utils"
 )
 
 var CreateAccount = func(w http.ResponseWriter, r *http.Request) {
 
 	account := &models.Account{}
-	fmt.Println("----")
 	err := json.NewDecoder(r.Body).Decode(account) //decode the request body into struct and failed if any error occur
 	if err != nil {
 		u.Respond(w, u.Message(false, "Invalid request"))

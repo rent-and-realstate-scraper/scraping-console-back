@@ -1,8 +1,8 @@
 package main
 
 import (
-	"go-mux-jwt-template/app"
-	"go-mux-jwt-template/controllers"
+	"scraping-console-back/app"
+	"scraping-console-back/controllers"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"log"

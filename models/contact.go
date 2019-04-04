@@ -1,7 +1,7 @@
 package models
 
 import (
-	u "go-mux-jwt-template/utils"
+	u "scraping-console-back/utils"
 	"github.com/jinzhu/gorm"
 	"fmt"
 )
