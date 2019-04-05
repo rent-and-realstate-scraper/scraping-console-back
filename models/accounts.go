@@ -84,20 +84,20 @@ func (account *Account) Create() (map[string] interface{}) {
 	return response
 }
 
-func Login(email, password string) (map[string]interface{}) {
+func Login(email, password string) (response map[string]interface{}, code int) {
 
 	account := &Account{}
 	err := GetDB().Table("accounts").Where("email = ?", email).First(account).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return u.Message(false, "Email address not found")
+			return u.Message(false, "Email address not found"), 401
 		}
-		return u.Message(false, "Connection error. Please retry")
+		return u.Message(false, "Connection error. Please retry"), 500
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(account.Password), []byte(password))
 	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword { //Password does not match!
-		return u.Message(false, "Invalid login credentials. Please try again")
+		return u.Message(false, "Invalid login credentials. Please try again"), 401
 	}
 	//Worked! Logged In
 	account.Password = ""
@@ -110,7 +110,7 @@ func Login(email, password string) (map[string]interface{}) {
 
 	resp := u.Message(true, "Logged In")
 	resp["account"] = account
-	return resp
+	return resp, 200
 }
 
 func GetUser(u uint) *Account {

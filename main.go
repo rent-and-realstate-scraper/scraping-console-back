@@ -6,7 +6,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"scraping-console-back/app"
 	"scraping-console-back/controllers"
 	"scraping-console-back/middlewares"
 )
@@ -21,7 +20,7 @@ func main() {
 	router.HandleFunc("/api/contacts/new", controllers.CreateContact).Methods("POST")
 	router.HandleFunc("/api/me/contacts", controllers.GetContactsFor).Methods("GET") //  user/2/contacts
 
-	router.Use(app.JwtAuthentication)        //attach JWT auth middleware
+	router.Use(middlewares.JwtAuthentication)        //attach JWT auth middleware
 	router.Use(middlewares.MiddlewareLogger) //attach JWT auth middleware
 
 
