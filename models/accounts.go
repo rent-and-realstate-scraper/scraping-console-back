@@ -8,6 +8,7 @@ import (
 	"os"
 	u "scraping-console-back/utils"
 	"strings"
+	"time"
 )
 
 /*
@@ -23,7 +24,9 @@ type Account struct {
 	gorm.Model
 	Email string `json:"email"`
 	Password string `json:"password"`
-	Token string `json:"token";sql:"-"`
+	Token string `json:"token"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"created_at"`
 }
 
 //Validate incoming user details...

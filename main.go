@@ -1,13 +1,14 @@
 package main
 
 import (
-	"scraping-console-back/app"
-	"scraping-console-back/controllers"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 	"os"
+	"scraping-console-back/app"
+	"scraping-console-back/controllers"
+	"scraping-console-back/middlewares"
 )
 
 func main() {
@@ -15,11 +16,13 @@ func main() {
 	router := mux.NewRouter()
 
 	router.HandleFunc("/api/user/new", controllers.CreateAccount).Methods("POST")
+
 	router.HandleFunc("/api/user/login", controllers.Authenticate).Methods("POST")
 	router.HandleFunc("/api/contacts/new", controllers.CreateContact).Methods("POST")
 	router.HandleFunc("/api/me/contacts", controllers.GetContactsFor).Methods("GET") //  user/2/contacts
 
-	router.Use(app.JwtAuthentication) //attach JWT auth middleware
+	router.Use(app.JwtAuthentication)        //attach JWT auth middleware
+	router.Use(middlewares.MiddlewareLogger) //attach JWT auth middleware
 
 
 

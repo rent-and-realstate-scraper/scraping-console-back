@@ -17,7 +17,7 @@ func TestCreateAccount(t *testing.T) {
 	defer server.Close()
 
 	mux.HandleFunc("/api/user/new", CreateAccount)
-	body := models.Account{Email:"email@email", Password:"password"}
+	body := models.Account{Email:"email3@email", Password:"password2"}
 	json, _ := json.Marshal(body)
 
 	request, _ := http.NewRequest("POST", "/api/user/new", bytes.NewBuffer(json))
