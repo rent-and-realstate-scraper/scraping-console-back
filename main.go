@@ -18,6 +18,8 @@ func main() {
 
 	router.HandleFunc("/api/user/login", controllers.Authenticate).Methods("POST")
 	router.HandleFunc("/api/contacts/new", controllers.CreateContact).Methods("POST")
+	router.HandleFunc("/api/me/scraped_cities", controllers.GetContactsFor).Queries("scraping_id", "{scraping_id}").Methods("GET")
+
 	router.HandleFunc("/api/me/contacts", controllers.GetContactsFor).Methods("GET") //  user/2/contacts
 
 	router.Use(middlewares.JwtAuthentication)        //attach JWT auth middleware

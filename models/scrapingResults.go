@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"github.com/jinzhu/gorm"
 	"time"
 )
@@ -39,7 +40,7 @@ type ScrapingResults struct {
 
 type ScrapedCities struct {
 	gorm.Model
-	ScrapedCities []ScrapedCity
+	ScrapedCities []*ScrapedCity
 }
 
 type ScrapedCity struct {
@@ -56,12 +57,17 @@ type ScrapingExecutionLog struct {
 
 
 
-func (scrapedCities *ScrapedCities) GetScrapedCities(ScrapingId string) (*ScrapedCities) {
-	var Result =  make([]ScrapedCity, 0)
+func (scrapedCities *ScrapedCities) GetScrapedCities(scrapingId string) (scrapedResultCities *ScrapedCities, code int) {
+	var Result =  make([]*ScrapedCity, 0)
 
-	GetDB().Exec("select r.city_name from scraping_pieces_index r left join scraping_results t on  " +
-		"t.piece_id = r.piece_id where t.scraping_id = '?' group by r.city_name", ScrapingId ).Scan(&Result)
-
-	return &ScrapedCities{ScrapedCities: Result}
+	sql := "select r.city_name from scraping_pieces_index r left join scraping_results t on  " +
+		"t.piece_id = r.piece_id where t.scraping_id = \"" + scrapingId + "\" group by r.city_name;"
+	err := GetDB().Exec(sql).Scan(&Result)
+	if (err != nil) {
+		code = 500
+		fmt.Println(err)
+	}
+	scrapedResultCities = &ScrapedCities{ScrapedCities: Result}
+	return scrapedResultCities, code
 }
 
