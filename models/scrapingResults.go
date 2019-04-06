@@ -39,6 +39,11 @@ type ScrapingResults struct {
 
 type ScrapedCities struct {
 	gorm.Model
+	ScrapedCities []ScrapedCity
+}
+
+type ScrapedCity struct {
+	gorm.Model
 	CityName string `json:"city_name"`
 }
 
@@ -51,11 +56,12 @@ type ScrapingExecutionLog struct {
 
 
 
-func (contact *Contact) GetScrapedCities(ScrapingId string) (*[]ScrapedCities) {
-	var Result *[]ScrapedCities
+func (scrapedCities *ScrapedCities) GetScrapedCities(ScrapingId string) (*ScrapedCities) {
+	var Result =  make([]ScrapedCity, 0)
 
-	GetDB().Exec("select r.city_name from scraping_pieces_index r left join scraping_results t on  t.piece_id = r.piece_id where t.scraping_id = '?' group by r.city_name", ScrapingId ).Scan(&Result)
+	GetDB().Exec("select r.city_name from scraping_pieces_index r left join scraping_results t on  " +
+		"t.piece_id = r.piece_id where t.scraping_id = '?' group by r.city_name", ScrapingId ).Scan(&Result)
 
-	return Result
+	return &ScrapedCities{ScrapedCities: Result}
 }
 
