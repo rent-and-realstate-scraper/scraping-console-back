@@ -56,8 +56,12 @@ type ScrapingExecutionLog struct {
 
 func (scrapedCities *ScrapedCities) GetScrapedCities(scrapingId string) (scrapedResultCities *ScrapedCities, code int) {
 	code = 200
+
+
 	sql := "select r.city_name from scraping_pieces_index r left join scraping_results t on  " +
 		"t.piece_id = r.piece_id where t.scraping_id = '" + scrapingId+ "' group by r.city_name;"
+
+	_, err := db.Query("SET_SQL_MODE = ''")
 
 
 	db := GetDb()
