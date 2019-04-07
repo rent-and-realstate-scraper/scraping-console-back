@@ -1,10 +1,10 @@
 package models
 
 import (
-	"database/sql"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
+	"github.com/jmoiron/sqlx"
 	"github.com/joho/godotenv"
 	"os"
 )
@@ -12,7 +12,7 @@ import (
 
 
 var dbGorm *gorm.DB
-var db *sql.DB
+var db *sqlx.DB
 
 func init() {
 
@@ -40,13 +40,19 @@ func init() {
 
 	dbGorm = conn
 	dbGorm.Debug().AutoMigrate(&Account{}, &Contact{})
-	db, _ = sql.Open("mysql",  os.Getenv("database_url"))
+	db, _ = sqlx.Connect("mysql",  os.Getenv("database_url"))
+
+	sqlCreation := "create table if not exists accounts (ID int key NOT NULL AUTO_INCREMENT, token varchar(20), password varchar(20), email varchar (20));"
+	_, errCr := db.Queryx(sqlCreation)
+	if errCr!= nil{
+		panic(err)
+	}
 }
 
 func GetDBGorm() *gorm.DB {
 	return dbGorm
 }
 
-func GetDb() *sql.DB {
+func GetDb() *sqlx.DB {
 	return db
 }

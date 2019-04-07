@@ -7,14 +7,20 @@ import (
 	u "scraping-console-back/utils"
 )
 
-var GetScrapedCIties = func(w http.ResponseWriter, r *http.Request) {
+var GetScrapedCities = func(w http.ResponseWriter, r *http.Request) {
 	scrapedCities := models.ScrapedCities{}
 	scrapingId:= mux.Vars(r)["scraping_id"]
-	data, code := scrapedCities.GetScrapedCities(scrapingId)
-	if (code != 200) {
-		w.WriteHeader(code)
+	data:= scrapedCities.GetScrapedCities(scrapingId)
+	var code int
+	if data != nil && data.ScrapedCities != nil {
+		code = 200
+	} else {
+		code = 500
 	}
-	resp := u.Message(true, "success")
+
+	w.WriteHeader(code)
+
+	var resp map[string]interface{} = make(map[string]interface{})
 	resp["data"] = data
 	u.Respond(w, resp)
 }
