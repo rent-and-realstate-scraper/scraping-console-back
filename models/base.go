@@ -1,14 +1,19 @@
 package models
 
 import (
+	"database/sql"
+	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
-	"os"
 	"github.com/joho/godotenv"
-	"fmt"
+	"os"
 )
 
-var db *gorm.DB
+
+
+var dbGorm *gorm.DB
+var db *sql.DB
+
 func init() {
 
 	e := godotenv.Load()
@@ -33,10 +38,15 @@ func init() {
 		fmt.Print(err)
 	}
 
-	db = conn
-	db.Debug().AutoMigrate(&Account{}, &Contact{})
+	dbGorm = conn
+	dbGorm.Debug().AutoMigrate(&Account{}, &Contact{})
+	db, _ = sql.Open("mysql",  os.Getenv("database_url"))
 }
 
-func GetDB() *gorm.DB {
+func GetDBGorm() *gorm.DB {
+	return dbGorm
+}
+
+func GetDb() *sql.DB {
 	return db
 }

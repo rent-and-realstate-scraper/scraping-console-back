@@ -1,7 +1,6 @@
 package models
 
 import (
-	"fmt"
 	"github.com/jinzhu/gorm"
 	"time"
 )
@@ -39,12 +38,10 @@ type ScrapingResults struct {
 }
 
 type ScrapedCities struct {
-	gorm.Model
-	ScrapedCities []*ScrapedCity
+	ScrapedCities []ScrapedCity
 }
 
 type ScrapedCity struct {
-	gorm.Model
 	CityName string `json:"city_name"`
 }
 
@@ -58,16 +55,35 @@ type ScrapingExecutionLog struct {
 
 
 func (scrapedCities *ScrapedCities) GetScrapedCities(scrapingId string) (scrapedResultCities *ScrapedCities, code int) {
-	var Result =  make([]*ScrapedCity, 0)
-
+	code = 200
 	sql := "select r.city_name from scraping_pieces_index r left join scraping_results t on  " +
-		"t.piece_id = r.piece_id where t.scraping_id = \"" + scrapingId + "\" group by r.city_name;"
-	err := GetDB().Exec(sql).Scan(&Result)
-	if (err != nil) {
-		code = 500
-		fmt.Println(err)
+		"t.piece_id = r.piece_id where t.scraping_id = '" + scrapingId+ "' group by r.city_name;"
+
+
+	db := GetDb()
+	// perform a db.Query insert
+	results, err := db.Query(sql)
+
+
+	// if there is an error inserting, handle it
+	if err != nil {
+		panic(err.Error())
 	}
-	scrapedResultCities = &ScrapedCities{ScrapedCities: Result}
+
+	var Resutl []ScrapedCity
+
+	for results.Next() {
+		var scrapedCity ScrapedCity
+		// for each row, scan the result into our scrapedCity composite object
+		err = results.Scan(&scrapedCity.CityName)
+		if err != nil {
+			panic(err.Error()) // proper error handling instead of panic in your app
+		}
+		// and then print out the scrapedCity's Name attribute
+		Resutl = append(Resutl, scrapedCity)
+	}
+
+	scrapedResultCities = &ScrapedCities{ScrapedCities: Resutl}
 	return scrapedResultCities, code
 }
 

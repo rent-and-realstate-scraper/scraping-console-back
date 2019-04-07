@@ -8,7 +8,6 @@ import (
 	"os"
 	u "scraping-console-back/utils"
 	"strings"
-	"time"
 )
 
 /*
@@ -25,8 +24,6 @@ type Account struct {
 	Email string `json:"email"`
 	Password string `json:"password"`
 	Token string `json:"token"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"created_at"`
 }
 
 //Validate incoming user details...
@@ -44,7 +41,7 @@ func (account *Account) Validate() (map[string] interface{}, bool) {
 	temp := &Account{}
 
 	//check for errors and duplicate emails
-	err := GetDB().Table("accounts").Where("email = ?", account.Email).First(temp).Error
+	err := GetDBGorm().Table("accounts").Where("email = ?", account.Email).First(temp).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		fmt.Println(err)
 		return u.Message(false, "Connection error. Please retry"), false
@@ -65,7 +62,7 @@ func (account *Account) Create() (map[string] interface{}) {
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(account.Password), bcrypt.DefaultCost)
 	account.Password = string(hashedPassword)
 
-	GetDB().Create(account)
+	GetDBGorm().Create(account)
 
 	if account.ID <= 0 {
 		return u.Message(false, "Failed to create account, connection error.")
@@ -87,7 +84,7 @@ func (account *Account) Create() (map[string] interface{}) {
 func Login(email, password string) (response map[string]interface{}, code int) {
 
 	account := &Account{}
-	err := GetDB().Table("accounts").Where("email = ?", email).First(account).Error
+	err := GetDBGorm().Table("accounts").Where("email = ?", email).First(account).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return u.Message(false, "Email address not found"), 401
@@ -116,7 +113,7 @@ func Login(email, password string) (response map[string]interface{}, code int) {
 func GetUser(u uint) *Account {
 
 	acc := &Account{}
-	GetDB().Table("accounts").Where("id = ?", u).First(acc)
+	GetDBGorm().Table("accounts").Where("id = ?", u).First(acc)
 	if acc.Email == "" { //User not found!
 		return nil
 	}
