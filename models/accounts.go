@@ -18,7 +18,7 @@ type Account struct {
 	Email string `json:"email"`
 	Password string `json:"password"`
 	Token string `json:"token"`
-	ID uint `json:"ID"`
+	ID uint `json:"id"`
 }
 
 func (account *Account) Validate() (map[string] interface{}, bool) {
@@ -37,14 +37,14 @@ func (account *Account) Validate() (map[string] interface{}, bool) {
 	db = GetDb()
 	sql := fmt.Sprintf("select * from accounts where email = '%s'",account.Email)
 
-	rows, _ := db.Queryx(sql)
-	for rows.Next() {
-		err := rows.StructScan(&temp)
-		if err != nil {
-			fmt.Println(err)
-			return u.Message(false, "Connection error. Please retry"), false
-		}
+	rows := db.QueryRowx(sql)
+
+	err := rows.StructScan(&temp)
+	if err != nil {
+		fmt.Println(err)
+		// return u.Message(false, "Connection error. Please retry"), false
 	}
+
 
 	if temp.Email != "" {
 		return u.Message(false, "Email address already in use by another user."), false

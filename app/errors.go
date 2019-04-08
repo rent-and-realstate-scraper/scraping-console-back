@@ -2,7 +2,7 @@ package app
 
 import (
 	"net/http"
-	u "go-mux-jwt-template/utils"
+	u "scraping-console-back/utils"
 )
 
 var NotFoundHandler = func(next http.Handler) http.Handler {

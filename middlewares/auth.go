@@ -2,9 +2,9 @@ package middlewares
 
 import (
 	"net/http"
-	u "go-mux-jwt-template/utils"
+	u "scraping-console-back/utils"
 	"strings"
-	"go-mux-jwt-template/models"
+	"scraping-console-back/models"
 	jwt "github.com/dgrijalva/jwt-go"
 	"os"
 	"context"

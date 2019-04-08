@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
-	"github.com/jinzhu/gorm"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"os"
@@ -47,13 +46,17 @@ var Authenticate = func(w http.ResponseWriter, r *http.Request) {
 
 func Login(email, password string) (response map[string]interface{}, code int) {
 
-	account := &models.Account{}
-	err := models.GetDBGorm().Table("accounts").Where("email = ?", email).First(account).Error
+	var account models.Account
+
+	db := models.GetDb()
+	sql := fmt.Sprintf("select * from accounts where email = '%s'",email)
+
+	rows := db.QueryRowx(sql)
+	err := rows.StructScan(&account)
+
 	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return u.Message(false, "Email address not found"), 401
-		}
-		return u.Message(false, "Connection error. Please retry"), 500
+		fmt.Println(err)
+		return u.Message(false, "Email address not found"), 401
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(account.Password), []byte(password))
@@ -77,8 +80,14 @@ func Login(email, password string) (response map[string]interface{}, code int) {
 func GetUser(u uint) *models.Account {
 
 	acc := &models.Account{}
-	models.GetDBGorm().Table("accounts").Where("id = ?", u).First(acc)
-	if acc.Email == "" { //User not found!
+
+	db := models.GetDb()
+	sql := fmt.Sprintf("select * from accounts where id = '%d'",u)
+
+	rows := db.QueryRowx(sql)
+	rows.StructScan(&acc)
+
+	if acc.Email == "" {
 		return nil
 	}
 

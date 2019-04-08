@@ -1,13 +1,12 @@
 package models
 
 import (
-	u "scraping-console-back/utils"
-	"github.com/jinzhu/gorm"
 	"fmt"
+	u "scraping-console-back/utils"
 )
 
 type Contact struct {
-	gorm.Model
+	ID uint `json:"id"`
 	Name string `json:"name"`
 	Phone string `json:"phone"`
 	UserId uint `json:"user_id"` //The user that this contact belongs to
@@ -42,9 +41,17 @@ func (contact *Contact) Create() (map[string] interface{}) {
 		return resp
 	}
 
-	GetDBGorm().Create(contact)
+	sql :="insert into contacts (name, phone, user_id) values ('"+ contact.Name + "','"+  contact.Phone + "','" + string(contact.UserId) + "')"
+	fmt.Println(sql)
+	_, err := db.Queryx(sql)
 
-	resp := u.Message(true, "success")
+	var resp map[string]interface{}
+	if (err != nil) {
+		fmt.Println(err)
+		resp = u.Message(false, "error creating account")
+
+	}
+	resp = u.Message(true, "success")
 	resp["contact"] = contact
 	return resp
 }
@@ -52,20 +59,37 @@ func (contact *Contact) Create() (map[string] interface{}) {
 func GetContact(id uint) (*Contact) {
 
 	contact := &Contact{}
-	err := GetDBGorm().Table("contacts").Where("id = ?", id).First(contact).Error
+
+	db = GetDb()
+	sql := fmt.Sprintf("select * from contacts where id = '%d'",contact.ID)
+
+	rows := db.QueryRowx(sql)
+	err := rows.StructScan(&contact)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+
 	if err != nil {
 		return nil
 	}
 	return contact
 }
 
-func GetContacts(user uint) ([]*Contact) {
+func GetContacts(user uint) ([]Contact) {
 
-	contacts := make([]*Contact, 0)
-	err := GetDBGorm().Table("contacts").Where("user_id = ?", user).Find(&contacts).Error
-	if err != nil {
-		fmt.Println(err)
-		return nil
+	var contacts []Contact
+	db = GetDb()
+	sql := fmt.Sprintf("select * from contacts where id = '%d'",user)
+
+	rows, err := db.Queryx(sql)
+	for rows.Next() {
+		var contact Contact
+		err = rows.StructScan(&contact)
+		if err != nil {
+			fmt.Println(err)
+		}
+		contacts = append(contacts, contact)
 	}
 
 	return contacts

@@ -33,17 +33,19 @@
 			"Rev": "04140366298a54a039076d798123ffa108fff46c"
 		},
 		{
+			"ImportPath": "github.com/jmoiron/sqlx",
+			"Comment": "v1.2.0-15-gcdf62fd",
+			"Rev": "cdf62fdf55f66fb2484fe214f89c059f0bd3f567"
+		},
+		{
+			"ImportPath": "github.com/jmoiron/sqlx/reflectx",
+			"Comment": "v1.2.0-15-gcdf62fd",
+			"Rev": "cdf62fdf55f66fb2484fe214f89c059f0bd3f567"
+		},
+		{
 			"ImportPath": "github.com/joho/godotenv",
 			"Comment": "v1.3.0-10-g5c0e6c6",
 			"Rev": "5c0e6c6ab1a0a9ef0a8822cba3a05d62f7dad941"
-		},
-		{
-			"ImportPath": "go-mux-jwt-template/models",
-			"Rev": "ccfff5be591f8ecf58287d75dce6920b018b5e4b"
-		},
-		{
-			"ImportPath": "go-mux-jwt-template/utils",
-			"Rev": "ccfff5be591f8ecf58287d75dce6920b018b5e4b"
 		},
 		{
 			"ImportPath": "golang.org/x/crypto/bcrypt",
