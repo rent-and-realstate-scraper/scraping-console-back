@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/stretchr/testify/assert"
-	"scraping-console-back/controllers"
 	"net/http"
 	"net/http/httptest"
 	"scraping-console-back/models"
@@ -17,7 +16,7 @@ func TestCreateAccount(t *testing.T) {
 	server := httptest.NewServer(mux)
 	defer server.Close()
 
-	mux.HandleFunc("/api/user/new", controllers.CreateAccount)
+	mux.HandleFunc("/api/user/new", CreateAccount)
 	body := models.Account{Email:"email3@email", Password:"password2"}
 	json, _ := json.Marshal(body)
 
