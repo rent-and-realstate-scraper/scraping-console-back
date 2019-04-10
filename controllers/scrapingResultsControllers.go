@@ -8,7 +8,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-var GetScrapedCities = func(w http.ResponseWriter, r *http.Request) {
+var GetCount = func(w http.ResponseWriter, r *http.Request) {
 	scrapedCities := models.ScrapedCities{}
 	scrapingId := mux.Vars(r)["scraping_id"]
 	data := scrapedCities.GetScrapedCities(scrapingId)
