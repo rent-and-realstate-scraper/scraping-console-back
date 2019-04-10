@@ -17,11 +17,3 @@ type ScrapingResults struct {
 	NumberOfAdsBuy int `json:"number_of_ads_buy"`
 	ExtraData string `json:"extra_data"`
 }
-
-
-type ScrapingExecutionLog struct {
-	ScrapingId string `json:"scraping_id"`
-	LastPiece string `json:"last_piece"`
-	LastResult string `json:"last_result"`
-}
-

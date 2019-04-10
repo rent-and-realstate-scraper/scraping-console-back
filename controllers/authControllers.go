@@ -3,12 +3,13 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/dgrijalva/jwt-go"
-	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"os"
 	"scraping-console-back/models"
 	u "scraping-console-back/utils"
+
+	"github.com/dgrijalva/jwt-go"
+	"golang.org/x/crypto/bcrypt"
 )
 
 var CreateAccount = func(w http.ResponseWriter, r *http.Request) {
@@ -35,7 +36,7 @@ var Authenticate = func(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp, code:= Login(account.Email, account.Password)
+	resp, code := Login(account.Email, account.Password)
 	if code == 401 {
 		w.WriteHeader(http.StatusUnauthorized)
 	} else if code == 500 {
@@ -49,7 +50,7 @@ func Login(email, password string) (response map[string]interface{}, code int) {
 	var account models.Account
 
 	db := models.GetDb()
-	sql := fmt.Sprintf("select * from accounts where email = '%s'",email)
+	sql := fmt.Sprintf("select * from accounts where email = '%s'", email)
 
 	rows := db.QueryRowx(sql)
 	err := rows.StructScan(&account)
@@ -82,7 +83,7 @@ func GetUser(u uint) *models.Account {
 	acc := &models.Account{}
 
 	db := models.GetDb()
-	sql := fmt.Sprintf("select * from accounts where id = '%d'",u)
+	sql := fmt.Sprintf("select * from accounts where id = '%d'", u)
 
 	rows := db.QueryRowx(sql)
 	rows.StructScan(&acc)
