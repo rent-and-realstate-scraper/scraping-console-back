@@ -6,7 +6,7 @@ import (
 )
 
 type ScrapingExecutionLog struct {
-	ScrapingId  string    `json:"scraping_id"`
+	ScrapingID  string    `json:"scraping_id"`
 	LastPiece   string    `json:"last_piece"`
 	LastResult  string    `json:"last_result"`
 	DateScraped time.Time `json:"date_scraped"`
@@ -19,7 +19,7 @@ func GetLastPiece(scrapingId string) {
 	fmt.Println(sql)
 }
 
-func GetScrapingExecutionLog(limit int, offset int, order string) {
+func GetScrapingExecutionLog(limit int, offset int, order string) []ScrapingExecutionLog {
 	if order == "" {
 		order = "desc"
 	}
@@ -28,18 +28,20 @@ func GetScrapingExecutionLog(limit int, offset int, order string) {
 	fmt.Println(sql)
 
 	db := GetDb()
-	results, err := db.Queryx(sql)
+	results, err := db.Query(sql)
 	if err != nil {
 		panic(err.Error())
 	}
 
-	var result []ScrapingExecutionLog
+	var scrapingExecutionLogs []ScrapingExecutionLog
 	for results.Next() {
-		var scrapingExecutionLog ScrapingExecutionLog
-		err = results.StructScan(&scrapingExecutionLog)
+		var item ScrapingExecutionLog
+		err = results.Scan(&item.ScrapingID, &item.LastPiece, &item.LastResult, &item.DateScraped, &item.AppId, &item.DeviceId)
 		if err != nil {
 			fmt.Println(err)
 		}
-		result = append(result, scrapingExecutionLog)
+		scrapingExecutionLogs = append(scrapingExecutionLogs, item)
 	}
+
+	return scrapingExecutionLogs
 }
