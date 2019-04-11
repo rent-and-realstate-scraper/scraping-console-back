@@ -18,27 +18,22 @@ type ScrapingPiecesIndex struct {
 	Method             string  `json:"method"`
 }
 
-func IndexGetScrapingCount(scraped bool, deviceId string) (scrapingPiecesIndexes []ScrapingPiecesIndex) {
+func IndexGetScrapingCount(scraped bool, deviceId string) (count int) {
 	sql := fmt.Sprint("select count(*) from scraping_pieces_index where scraped=%b and device_id = \"%s\";", scraped, deviceId)
 
-	_, err := db.Queryx("SET_SQL_MODE = ''")
-
 	db := GetDb()
-	rows, err := db.Queryx(sql)
+	rows, err := db.Query(sql)
 	if err != nil {
 		panic(err.Error())
 	}
 
-	var result []ScrapingPiecesIndex
 	for rows.Next() {
-		var scrapingPiecesIndex ScrapingPiecesIndex = ScrapingPiecesIndex{}
-		err = rows.StructScan(&scrapingPiecesIndex)
+		err = rows.Scan(&count)
 		if err != nil {
 			fmt.Println(err)
 		}
-		result = append(result, scrapingPiecesIndex)
 	}
 
-	return result
+	return count
 
 }
