@@ -15,17 +15,13 @@ func main() {
 	router := mux.NewRouter()
 
 	router.HandleFunc("/api/user/new", controllers.CreateAccount).Methods("POST")
-
 	router.HandleFunc("/api/user/login", controllers.Authenticate).Methods("POST")
-	router.HandleFunc("/api/contacts/new", controllers.CreateContact).Methods("POST")
+
 	router.HandleFunc("/api/me/scraped_cities", controllers.GetContactsFor).Queries("scraping_id", "{scraping_id}").Methods("GET")
+	router.HandleFunc("/api/me/scraping_execution_log", controllers.GetScrapingExecutionLog).Methods("GET")
 
-	router.HandleFunc("/api/me/contacts", controllers.GetContactsFor).Methods("GET") //  user/2/contacts
-
-	router.Use(middlewares.JwtAuthentication)        //attach JWT auth middleware
-	router.Use(middlewares.MiddlewareLogger) //attach JWT auth middleware
-
-
+	router.Use(middlewares.JwtAuthentication) //attach JWT auth middleware
+	router.Use(middlewares.MiddlewareLogger)  //attach JWT auth middleware
 
 	//router.NotFoundHandler = app.NotFoundHandler
 
@@ -40,5 +36,5 @@ func main() {
 
 	// start server listen
 	// with error handling
-	log.Fatal(http.ListenAndServe(":" + port, handlers.CORS(originsOk, headersOk, methodsOk)(router)))
+	log.Fatal(http.ListenAndServe(":"+port, handlers.CORS(originsOk, headersOk, methodsOk)(router)))
 }

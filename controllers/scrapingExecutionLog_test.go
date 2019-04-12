@@ -14,9 +14,9 @@ func TestScrapingExecutionLog(t *testing.T) {
 	router := mux.NewRouter()
 
 	route := "/api/me/scraping_execution_log"
-	router.HandleFunc(route, GetScrapingExecutionLog).Queries("limit", "{limit}").Methods("GET")
+	router.HandleFunc(route, GetScrapingExecutionLog).Methods("GET")
 
-	request, _ := http.NewRequest("GET", route+"?limit=10&skip=0", nil)
+	request, _ := http.NewRequest("GET", route+"?limit=10&skip=1&order=desc", nil)
 	response := httptest.NewRecorder()
 
 	router.ServeHTTP(response, request)

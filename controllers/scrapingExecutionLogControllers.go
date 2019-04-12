@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"github.com/gorilla/mux"
 	"net/http"
 	"scraping-console-back/models"
 	u "scraping-console-back/utils"
@@ -9,9 +8,11 @@ import (
 )
 
 var GetScrapingExecutionLog = func(w http.ResponseWriter, r *http.Request) {
-	limit, _ := strconv.Atoi(mux.Vars(r)["limit"])
-	skip, _ := strconv.Atoi(mux.Vars(r)["skip"])
-	offset, _ := mux.Vars(r)["offset"]
+	v := r.URL.Query()
+
+	limit, _ := strconv.Atoi(v.Get("limit"))
+	skip, _ := strconv.Atoi(v.Get("skip"))
+	offset := v.Get("order")
 
 	var data = models.GetScrapingExecutionLog(limit, skip, offset)
 	var code int
