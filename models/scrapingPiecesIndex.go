@@ -1,6 +1,8 @@
 package models
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type ScrapingPiecesIndex struct {
 	PieceId            string  `json:"piece_id" db:"piece_id"`
@@ -30,5 +32,22 @@ func IndexGetScrapingCount(scraped bool, deviceId string) (count int) {
 	}
 
 	return count
+
+}
+
+func ListDevices() (devices []string) {
+	sql := "select device_id from scraping_pieces_index group by device_id"
+	db := GetDb()
+	rows, _ := db.Query(sql)
+	for rows.Next() {
+		var device string
+		err := rows.Scan(device)
+		if err != nil {
+			fmt.Println(err)
+		}
+		devices = append(devices, device)
+	}
+
+	return devices
 
 }
