@@ -25,3 +25,25 @@ var GetScrapedCities = func(w http.ResponseWriter, r *http.Request) {
 	resp["data"] = data
 	u.Respond(w, resp)
 }
+
+var GetScrapedResultsForCity = func(w http.ResponseWriter, r *http.Request) {
+
+	v := r.URL.Query()
+
+	scrapingId := v.Get("scraping_id")
+	cityName := v.Get("city_name")
+
+	data := models.GetScrapingResultsForCity(cityName, scrapingId)
+	var code int
+	if data != nil {
+		code = 200
+	} else {
+		code = 500
+	}
+
+	w.WriteHeader(code)
+
+	var resp map[string]interface{} = make(map[string]interface{})
+	resp["data"] = data
+	u.Respond(w, resp)
+}

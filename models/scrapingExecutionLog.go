@@ -16,7 +16,13 @@ type ScrapingExecutionLog struct {
 
 func GetLastPiece(scrapingId string) {
 	sql := fmt.Sprintf("select * from scraping_execution_log where scraping_id = %s", scrapingId)
-	fmt.Println(sql)
+	db := GetDb()
+	results := db.QueryRow(sql)
+	var item ScrapingExecutionLog
+	err := results.Scan(&item.ScrapingID, &item.LastPiece, &item.LastResult)
+	if err != nil {
+		fmt.Println(err)
+	}
 }
 
 func GetScrapingExecutionLog(limit int, offset int, order string) []ScrapingExecutionLog {
