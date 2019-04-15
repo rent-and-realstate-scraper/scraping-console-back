@@ -1,24 +1,46 @@
-type struct Geojson {
-	Type string `json:"type"` //FeatureCollection
+package managers
+
+import (
+	"scraping-console-back/models"
+)
+
+type Geojson struct {
+	Type     string    `json:"type"` //FeatureCollection
 	Features []Feature `json:"features"`
 }
 
-type struct Feature {
-	Type string `json:"type"` //Feature
-	Properties []Property `json:"properties"`
-	BoundingBox []string `json:"bbox"`
-	Geometry Geometry `json:"geometry"`
+type Feature struct {
+	Type        string     `json:"type"` //Feature
+	Properties  []Property `json:"properties"`
+	BoundingBox []string   `json:"bbox"`
+	Geometry    Geometry   `json:"geometry"`
 }
 
-type struct Property {
+type Property struct {
 	AveragePrizeRent string `json:"average_prize_rent"`
-	AveragePrizeBuy string `json:"average_prize_buy"`
-	NumberOfAdsRent string `json:"number_of_ads_rent"`
-	NumberOfAdsBuy string `json:"number_of_ads_buy"`
+	AveragePrizeBuy  string `json:"average_prize_buy"`
+	NumberOfAdsRent  string `json:"number_of_ads_rent"`
+	NumberOfAdsBuy   string `json:"number_of_ads_buy"`
 }
 
-type struct Geometry {
-	Type string `json:"type"` //Polygon
+type Geometry struct {
+	Type        string       `json:"type"` //Polygon
 	Coordinates [][][]string `json:"coordinates"`
 }
 
+func GenerateGeoJsonFromResult(scrapingResults []models.ScrapingResultForCity) (geojson Geojson) {
+	var features []Feature
+	geojson = Geojson{"FeatureCollection", features}
+	for _, result := range scrapingResults {
+		feature := generateFeature(result)
+		features = append(features, feature)
+	}
+
+	return geojson
+}
+func generateFeature(scrapingResult models.ScrapingResultForCity) (feature Feature) {
+
+	feature = Feature{Type: "Feature", Properties: []Property{}, Geometry: Geometry{Type: "Polygon"}}
+
+	return feature
+}

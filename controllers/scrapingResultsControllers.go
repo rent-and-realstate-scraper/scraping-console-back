@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"scraping-console-back/managers"
 	"scraping-console-back/models"
 	u "scraping-console-back/utils"
 
@@ -10,8 +11,8 @@ import (
 
 var GetScrapedCities = func(w http.ResponseWriter, r *http.Request) {
 	scrapedCities := models.ScrapedCities{}
-	scrapingId := mux.Vars(r)["scraping_id"]
-	data := scrapedCities.GetScrapedCities(scrapingId)
+	scrapingID := mux.Vars(r)["scraping_id"]
+	data := scrapedCities.GetScrapedCities(scrapingID)
 	var code int
 	if data != nil && data.ScrapedCities != nil {
 		code = 200
@@ -30,11 +31,14 @@ var GetScrapedResultsForCity = func(w http.ResponseWriter, r *http.Request) {
 
 	v := r.URL.Query()
 
-	scrapingId := v.Get("scraping_id")
+	scrapingID := v.Get("scraping_id")
 	cityName := v.Get("city_name")
 
-	data := models.GetScrapingResultsForCity(cityName, scrapingId)
+	data := models.GetScrapingResultsForCity(cityName, scrapingID)
+
+	geojson := managers.GenerateGeoJsonFromResult(data)
 	var code int
+
 	if data != nil {
 		code = 200
 	} else {
@@ -44,6 +48,6 @@ var GetScrapedResultsForCity = func(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(code)
 
 	var resp map[string]interface{} = make(map[string]interface{})
-	resp["data"] = data
+	resp["geojson"] = geojson
 	u.Respond(w, resp)
 }
