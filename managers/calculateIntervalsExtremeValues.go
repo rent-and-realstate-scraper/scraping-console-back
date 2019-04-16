@@ -14,7 +14,7 @@ type ExtremeValues struct {
 	Options map[string]Interval
 }
 
-func calculateExtremeValues(scrapingResults []models.ScrapingResultForCity) (extremeValues ExtremeValues) {
+func CalculateExtremeValues(scrapingResults []models.ScrapingResultForCity) (extremeValues ExtremeValues) {
 	options := make(map[string]Interval)
 	initializeIntervals(options)
 	extremeValues = ExtremeValues{Options: options}

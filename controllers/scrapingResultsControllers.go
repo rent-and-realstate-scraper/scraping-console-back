@@ -37,6 +37,7 @@ var GetScrapedResultsForCity = func(w http.ResponseWriter, r *http.Request) {
 	data := models.GetScrapingResultsForCity(cityName, scrapingID)
 
 	geojson := managers.GenerateGeoJsonFromResult(data)
+	intervals := managers.CalculateExtremeValues(data)
 	var code int
 
 	if data != nil {
@@ -49,5 +50,6 @@ var GetScrapedResultsForCity = func(w http.ResponseWriter, r *http.Request) {
 
 	var resp map[string]interface{} = make(map[string]interface{})
 	resp["geojson"] = geojson
+	resp["intervals"] = intervals
 	u.Respond(w, resp)
 }

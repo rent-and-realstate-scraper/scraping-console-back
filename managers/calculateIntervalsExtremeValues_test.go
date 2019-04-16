@@ -27,7 +27,7 @@ func TestCalculateExtremeValues(t *testing.T) {
 	result2.AveragePrizeRent = 0.01
 
 	results := []models.ScrapingResultForCity{result1, result2}
-	intervals := calculateExtremeValues(results)
+	intervals := CalculateExtremeValues(results)
 	fmt.Println(intervals)
 	assert.NotNil(t, intervals, "is not nil")
 	// assert.Equal(t, geojson.Features[0].Properties.NumberOfAdsBuy, result1.NumberOfAdsBuy, "fields are filled")

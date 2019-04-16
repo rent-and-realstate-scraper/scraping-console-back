@@ -2,11 +2,12 @@ package controllers
 
 import (
 	"fmt"
-	"github.com/gorilla/mux"
-	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/gorilla/mux"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestScrapedCities(t *testing.T) {
@@ -37,6 +38,7 @@ func TestGetScrapedResultsForCity(t *testing.T) {
 
 	router.ServeHTTP(response, request)
 	fmt.Println(response.Body)
+	assert.NotNil(t, response.Body, "intervals are filled")
 	assert.Equal(t, 200, response.Code, "OK response is expected")
 
 }
