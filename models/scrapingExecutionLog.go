@@ -6,23 +6,23 @@ import (
 )
 
 type ScrapingExecutionLog struct {
-	ScrapingID  string    `json:"scraping_id"`
-	LastPiece   string    `json:"last_piece"`
-	LastResult  string    `json:"last_result"`
-	DateScraped time.Time `json:"date_scraped"`
-	AppId       string    `json:"app_id"`
-	DeviceId    string    `json:"device_id"`
+	ScrapingID  string    `json:"scraping_id" db:"scraping_id"`
+	LastPiece   string    `json:"last_piece" db:"last_piece"`
+	LastResult  string    `json:"last_result" db:"last_result"`
+	DateScraped time.Time `json:"date_scraped" db:"date_scraped"`
+	AppID       string    `json:"app_id" db:"app_id"`
+	DeviceID    string    `json:"device_id" db:"device_id"`
 }
 
-func GetLastPiece(scrapingId string) {
-	sql := fmt.Sprintf("select * from scraping_execution_log where scraping_id = %s", scrapingId)
+func GetLastPiece(scrapingId string) (lastPiece ScrapingExecutionLog) {
+	sql := fmt.Sprintf("select * from scraping_execution_log where scraping_id = '%s'", scrapingId)
 	db := GetDb()
-	results := db.QueryRow(sql)
-	var item ScrapingExecutionLog
-	err := results.Scan(&item.ScrapingID, &item.LastPiece, &item.LastResult)
+	results := db.QueryRowx(sql)
+	err := results.StructScan(&lastPiece)
 	if err != nil {
-		fmt.Println(err)
+		panic(err.Error())
 	}
+	return lastPiece
 }
 
 func GetScrapingExecutionLog(limit int, offset int, order string) []ScrapingExecutionLog {
@@ -42,7 +42,7 @@ func GetScrapingExecutionLog(limit int, offset int, order string) []ScrapingExec
 	var scrapingExecutionLogs []ScrapingExecutionLog
 	for results.Next() {
 		var item ScrapingExecutionLog
-		err = results.Scan(&item.ScrapingID, &item.LastPiece, &item.LastResult, &item.DateScraped, &item.AppId, &item.DeviceId)
+		err = results.Scan(&item.ScrapingID, &item.LastPiece, &item.LastResult, &item.DateScraped, &item.AppID, &item.DeviceID)
 		if err != nil {
 			fmt.Println(err)
 		}

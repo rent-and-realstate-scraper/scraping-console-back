@@ -1,27 +1,30 @@
 package main
 
 import (
-	"github.com/gorilla/handlers"
-	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 	"os"
 	"scraping-console-back/controllers"
 	"scraping-console-back/middlewares"
+
+	"github.com/gorilla/handlers"
+	"github.com/gorilla/mux"
 )
 
 func main() {
 
 	router := mux.NewRouter()
 
-	router.HandleFunc("/api/user/new", controllers.CreateAccount).Methods("POST")
-	router.HandleFunc("/api/user/login", controllers.Authenticate).Methods("POST")
+	router.HandleFunc("/api/auth/sign_in", controllers.CreateAccount).Methods("POST")
+	router.HandleFunc("/api/auth/login", controllers.Authenticate).Methods("POST")
 
-	router.HandleFunc("/api/me/scraped_cities", controllers.GetContactsFor).Queries("scraping_id", "{scraping_id}").Methods("GET")
-	router.HandleFunc("/api/me/scraping_execution_log", controllers.GetScrapingExecutionLog).Methods("GET")
+	router.HandleFunc("/api/scraping_results/scraped_cities", controllers.GetContactsFor).Queries("scraping_id", "{scraping_id}").Methods("GET")
+	router.HandleFunc("/api/scraping_results/scraping_execution_log", controllers.GetScrapingExecutionLog).Methods("GET")
+	router.HandleFunc("/api/scraping_results/scraped_results_for_city", controllers.GetScrapedResultsForCity).Methods("GET")
+	router.HandleFunc("/api/scraping_results/process_info", controllers.GetScrapedInfo).Methods("GET")
 
-	router.Use(middlewares.JwtAuthentication) //attach JWT auth middleware
-	router.Use(middlewares.MiddlewareLogger)  //attach JWT auth middleware
+	//router.Use(middlewares.JwtAuthentication) //attach JWT auth middleware
+	router.Use(middlewares.MiddlewareLogger) //attach JWT auth middleware
 
 	//router.NotFoundHandler = app.NotFoundHandler
 

@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"strconv"
 )
 
 type ScrapingPiecesIndex struct {
@@ -21,7 +22,7 @@ type ScrapingPiecesIndex struct {
 }
 
 func IndexGetScrapingCount(scraped bool, deviceId string) (count int) {
-	sql := fmt.Sprint("select count(*) from scraping_pieces_index where scraped=%b and device_id = \"%s\";", scraped, deviceId)
+	sql := fmt.Sprintf("select count(*) from scraping_pieces_index where scraped=%s and device_id = '%s';", strconv.FormatBool(scraped), deviceId)
 
 	db := GetDb()
 	rows := db.QueryRow(sql)
